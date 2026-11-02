@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Fixture: open shadow root</title><script src="guard.js"></script></head>
+<body><prompt-box id="host"></prompt-box>
+<script>
+customElements.define("prompt-box", class extends HTMLElement {
+  constructor() { super(); const r = this.attachShadow({ mode: "open" }); const t = document.createElement("textarea"); t.id = "field"; t.rows = 5; t.cols = 80; r.append(t); }
+});
+</script></body></html>

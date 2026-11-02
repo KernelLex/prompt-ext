@@ -1,0 +1,73 @@
+import type { Technique } from "../types";
+
+/**
+ * Named prompt frameworks. These are community conventions with competing expansions; the
+ * `provenance` field records the caveat. They are checklists for the rewriter, never output templates.
+ */
+export const FRAMEWORKS: Technique[] = [
+  {
+    id: "co_star",
+    name: "CO-STAR",
+    kind: "framework",
+    components: ["Context", "Objective", "Style", "Tone", "Audience", "Response"],
+    intendedUse: "Writing and communication tasks where audience, tone, and style shape the result.",
+    selectWhen: ["writing", "creative"],
+    avoidWhen: "coding, factual one-liners",
+    modes: ["balanced", "deep"],
+    instruction: "Check the prompt states context, objective, style, tone, audience, and response shape — only where the user implied them.",
+    limitations: "Pushes toward long prompts; most fields are irrelevant for technical tasks.",
+    provenance: "Popularized in 2023 via a GovTech Singapore prompt-engineering competition write-up. Informal convention.",
+  },
+  {
+    id: "risen",
+    name: "RISEN",
+    kind: "framework",
+    components: ["Role", "Instructions", "Steps", "End goal", "Narrowing"],
+    intendedUse: "Multi-step procedural or planning tasks.",
+    selectWhen: ["planning", "analysis", "coding"],
+    avoidWhen: "simple single-step requests",
+    modes: ["deep"],
+    instruction: "For multi-step work: clarify instructions, ordered steps, the end goal, and narrowing constraints.",
+    limitations: "Over-structures simple requests.",
+    provenance: "Community convention; the final letter is expanded elsewhere as 'Novelty'. This project uses 'Narrowing'.",
+  },
+  {
+    id: "rtf",
+    name: "RTF",
+    kind: "framework",
+    components: ["Role", "Task", "Format"],
+    intendedUse: "Short tasks that mainly need a clear task statement and output format.",
+    selectWhen: ["writing", "analysis", "coding", "other"],
+    avoidWhen: "tasks that need substantial context",
+    modes: ["balanced", "deep"],
+    instruction: "Make the task explicit and state the expected output format; add a role only if expertise changes the answer.",
+    limitations: "Too thin for complex tasks.",
+    provenance: "Community convention.",
+  },
+  {
+    id: "create",
+    name: "CREATE",
+    kind: "framework",
+    components: ["Context", "Role", "Explicit", "Action", "Target audience", "Exclusions"],
+    intendedUse: "Content creation with a defined audience and things to exclude.",
+    selectWhen: ["writing", "creative"],
+    avoidWhen: "coding, factual questions",
+    modes: ["deep"],
+    instruction: "For content creation: make the action explicit, name the target audience the user implied, and list stated exclusions.",
+    limitations: "Exclusions must come from the user, never be invented.",
+    provenance: "Conflicting expansions exist (e.g. Character, Request, Examples, Adjustments, Type, Extras). This project uses the expansion listed here.",
+  },
+  {
+    id: "ape",
+    name: "APE",
+    kind: "framework",
+    components: ["Action", "Purpose", "Expectation"],
+    intendedUse: "Short goal-oriented requests that lack a stated purpose or expected result.",
+    selectWhen: ["writing", "analysis", "planning", "other"],
+    avoidWhen: "requests already stating purpose and expectations",
+    modes: ["light", "balanced", "deep"],
+    instruction: "Make sure the action, its purpose (if the user gave one), and the expected result are clear.",
+    limitations: "Purpose must not be guessed.",
+    provenance: "Name collision: 'APE' also means Automatic Prompt Engineer (Zhou et al., 2022), an unrelated method. This project uses Action/Purpose/Expectation.",
+  },
+];

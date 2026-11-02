@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Prompt Enhancer",
+  "version": "0.1.0",
+  "description": "Rewrites the prompt in the focused text box into a clearer prompt using your own Groq API key. Never sends it for you.",
+  "minimum_chrome_version": "116",
+  "icons": { "16": "icons/icon-16.png", "32": "icons/icon-32.png", "48": "icons/icon-48.png", "128": "icons/icon-128.png" },
+  "action": {
+    "default_title": "Enhance prompt (Alt+Shift+E)",
+    "default_icon": { "16": "icons/icon-16.png", "32": "icons/icon-32.png" }
+  },
+  "background": { "service_worker": "background.js", "type": "module" },
+  "options_ui": { "page": "options.html", "open_in_tab": true },
+  "permissions": ["activeTab", "scripting", "storage"],
+  "optional_host_permissions": ["https://api.groq.com/*"],
+  "commands": {
+    "enhance-prompt": {
+      "suggested_key": { "default": "Alt+Shift+E" },
+      "description": "Enhance the prompt in the focused text box"
+    },
+    "restore-original": {
+      "suggested_key": { "default": "Alt+Shift+Z" },
+      "description": "Restore the original prompt"
+    }
+  }
+}

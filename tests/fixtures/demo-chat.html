@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Demo chat page</title><script src="guard.js"></script>
+<style>
+  body { margin:0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background:#fbfbfc; color:#1d2330; height:100vh; display:flex; flex-direction:column; align-items:center; }
+  header { width:100%; padding:14px 24px; border-bottom:1px solid #dfe3ea; background:#fff; font-weight:600; color:#5d6677; box-sizing:border-box; }
+  .note { font-size:12px; font-weight:400; margin-left:8px; color:#8a93a3; }
+  .thread { flex:1; width:min(760px,92%); padding:16px 0; }
+  .bubble { background:#fff; border:1px solid #dfe3ea; border-radius:12px; padding:12px 14px; max-width:80%; color:#5d6677; }
+  form { width:min(760px,92%); margin-bottom:28px; background:#fff; border:1px solid #cdd3dd; border-radius:16px; padding:12px 14px 10px; box-sizing:border-box; }
+  textarea { width:100%; border:0; outline:none; resize:none; font:inherit; min-height:250px; }
+  .row { display:flex; justify-content:space-between; align-items:center; color:#5d6677; font-size:12px; }
+  button { width:32px; height:32px; border-radius:50%; border:0; background:#4f46e5; color:#fff; font-weight:700; }
+</style></head>
+<body>
+  <header>Demo chat page <span class="note">local test fixture — not a real AI service</span></header>
+  <div class="thread"><div class="bubble">Hi! What would you like help with today?</div></div>
+  <form><textarea id="field" aria-label="Message"></textarea><div class="row"><span>Shift+Enter for newline</span><button type="submit" data-send aria-label="Send">↑</button></div></form>
+</body></html>

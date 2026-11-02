@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Fixture: closed shadow root</title><script src="guard.js"></script></head>
+<body><prompt-box id="host"></prompt-box>
+<script>
+customElements.define("prompt-box", class extends HTMLElement {
+  constructor() { super(); const r = this.attachShadow({ mode: "closed" }); const t = document.createElement("textarea"); r.append(t); window.__focusClosed = () => t.focus(); window.__typeClosed = (v) => { t.value = v; }; }
+});
+</script></body></html>

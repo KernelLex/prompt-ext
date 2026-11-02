@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Enhancer — Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+<main>
+  <header>
+    <img src="icons/icon-48.png" alt="" width="28" height="28">
+    <div>
+      <h1>Prompt Enhancer</h1>
+      <p class="sub">Improves the prompt in the focused text box, in place. It never sends your message for you.</p>
+    </div>
+  </header>
+
+  <section class="card" id="welcome" hidden>
+    <h2>Get started</h2>
+    <ol class="steps">
+      <li id="step-key">Add your Groq API key and accept the data notice below.</li>
+      <li>Click into a prompt box on a website.</li>
+      <li>Press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> or click the toolbar icon. Review the result, then send it yourself.</li>
+    </ol>
+  </section>
+
+  <section class="card" aria-labelledby="h-provider">
+    <h2 id="h-provider">Provider</h2>
+    <div class="row">
+      <span class="label" id="lbl-provider">Active provider</span>
+      <div role="radiogroup" aria-labelledby="lbl-provider" class="seg" id="providers"></div>
+    </div>
+    <div class="row">
+      <label class="label" for="api-key">Groq API key</label>
+      <div class="inline">
+        <input id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="gsk_…" aria-describedby="key-help">
+        <button id="save-key" class="primary" type="button">Save key</button>
+        <button id="remove-key" class="danger" type="button">Remove</button>
+      </div>
+    </div>
+    <p class="help" id="key-help">Saved: <span id="key-mask">none</span>. Create a key at console.groq.com → API Keys.</p>
+    <div class="row">
+      <label class="label" for="model">Model</label>
+      <select id="model"></select>
+    </div>
+    <div class="row">
+      <span class="label"></span>
+      <div class="inline">
+        <button id="test" type="button">Test connection</button>
+        <span id="test-status" class="status" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="label"></span>
+      <label class="check"><input type="checkbox" id="remember"> Remember my key after the browser closes</label>
+    </div>
+    <p class="help">If unchecked, the key is kept in memory only and you re-enter it after each browser restart. Saved keys are stored unencrypted in this Chrome profile: anyone with access to this profile or computer could read them.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-enh">
+    <h2 id="h-enh">Enhancement</h2>
+    <div class="row">
+      <span class="label" id="lbl-mode">Mode</span>
+      <div role="radiogroup" aria-labelledby="lbl-mode" class="seg" id="modes"></div>
+    </div>
+    <p class="help" id="mode-help"></p>
+    <div class="row">
+      <span class="label"></span>
+      <label class="check"><input type="checkbox" id="allow-insert-anyway"> Offer “Insert anyway” for results with warnings</label>
+    </div>
+    <p class="help">When a result fails a check (for example, it dropped a number from your prompt) it is never inserted automatically. With this on, you may insert it yourself after reviewing. Results that are malformed or answer your prompt instead of rewriting it can only be copied.</p>
+    <div class="row">
+      <span class="label">Shortcuts</span>
+      <div><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> enhance · <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> restore original
+        <p class="help">Change them at chrome://extensions/shortcuts</p></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-privacy">
+    <h2 id="h-privacy">Data &amp; privacy</h2>
+    <div class="notice">
+      <strong>What gets sent to Groq</strong>
+      <p>When you press Enhance, the text in the focused box — and nothing else from the page — is sent to Groq with your API key, together with this extension's rewriting instructions. No page address, page content, conversation history, or analytics are sent.</p>
+      <p>Groq's data handling is governed by your Groq account terms. Groq documents that request logs may be kept for up to 30 days, and that Zero Data Retention can be enabled in your Groq console's data controls (verify the current terms at console.groq.com/docs/your-data). Don't enhance text containing passwords, keys, or other secrets.</p>
+    </div>
+    <label class="check"><input type="checkbox" id="consent"> I understand what is sent to Groq and want to enable it.</label>
+    <p class="help" id="consent-status"></p>
+  </section>
+
+  <p class="foot" id="save-status" role="status" aria-live="polite"></p>
+</main>
+<script src="options.js"></script>
+</body>
+</html>
