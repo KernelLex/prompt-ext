@@ -1,0 +1,45 @@
+
+Running 39 tests using 1 worker
+
+  ✓   1 tests/e2e/production-load.spec.ts:9:1 › production build (dist/) loads in Chromium with no errors and minimal permissions (970ms)
+  -   2 tests/e2e/screens.spec.ts:16:3 › report screenshots › core journey
+  -   3 tests/e2e/screens.spec.ts:37:3 › report screenshots › states
+  -   4 tests/e2e/screens.spec.ts:88:3 › report screenshots › options page
+  ✓   5 tests/e2e/smoke.spec.ts:3:1 › smoke: textarea enhance → insert, never submit (503ms)
+  ✓   6 tests/e2e/workflow.spec.ts:45:5 › editor compatibility (D5 fixtures) › textarea.html: enhance replaces the text, Undo restores it, nothing is submitted (418ms)
+  ✓   7 tests/e2e/workflow.spec.ts:45:5 › editor compatibility (D5 fixtures) › input.html: enhance replaces the text, Undo restores it, nothing is submitted (413ms)
+  ✓   8 tests/e2e/workflow.spec.ts:45:5 › editor compatibility (D5 fixtures) › react.html: enhance replaces the text, Undo restores it, nothing is submitted (500ms)
+  ✓   9 tests/e2e/workflow.spec.ts:45:5 › editor compatibility (D5 fixtures) › contenteditable.html: enhance replaces the text, Undo restores it, nothing is submitted (478ms)
+  ✓  10 tests/e2e/workflow.spec.ts:45:5 › editor compatibility (D5 fixtures) › shadow.html: enhance replaces the text, Undo restores it, nothing is submitted (432ms)
+  ✓  11 tests/e2e/workflow.spec.ts:45:5 › editor compatibility (D5 fixtures) › prosemirror.html: enhance replaces the text, Undo restores it, nothing is submitted (460ms)
+  ✓  12 tests/e2e/workflow.spec.ts:65:3 › editor compatibility (D5 fixtures) › textarea: multi-line result keeps its line breaks (294ms)
+  ✓  13 tests/e2e/workflow.spec.ts:72:3 › editor compatibility (D5 fixtures) › input: multi-line result is collapsed to one line (293ms)
+  ✓  14 tests/e2e/workflow.spec.ts:79:3 › editor compatibility (D5 fixtures) › textarea: native Ctrl+Z also undoes the enhancement (349ms)
+  ✓  15 tests/e2e/workflow.spec.ts:89:3 › editor compatibility (D5 fixtures) › restore command restores the original after the toast is gone (338ms)
+  ✓  16 tests/e2e/workflow.spec.ts:98:3 › editor compatibility (D5 fixtures) › restore asks before overwriting text edited after enhancement (410ms)
+  ✓  17 tests/e2e/workflow.spec.ts:113:3 › unsupported fields send nothing › password field (210ms)
+  ✓  18 tests/e2e/workflow.spec.ts:122:3 › unsupported fields send nothing › no field focused (143ms)
+  ✓  19 tests/e2e/workflow.spec.ts:129:3 › unsupported fields send nothing › closed shadow root is unreachable (144ms)
+  ✓  20 tests/e2e/workflow.spec.ts:140:3 › unsupported fields send nothing › cross-origin iframe is not touched (384ms)
+  ✓  21 tests/e2e/workflow.spec.ts:162:3 › provider failures never change the original › invalid key (401) → clear message with settings action, no retry (355ms)
+  ✓  22 tests/e2e/workflow.spec.ts:169:3 › provider failures never change the original › daily quota (429 RPD) → circuit breaker stops further requests until overridden (417ms)
+  ✓  23 tests/e2e/workflow.spec.ts:182:3 › provider failures never change the original › transient rate limit → exactly one bounded retry (1.3s)
+  ✓  24 tests/e2e/workflow.spec.ts:188:3 › provider failures never change the original › server error (503) → one retry then a clear error (1.8s)
+  ✓  25 tests/e2e/workflow.spec.ts:194:3 › provider failures never change the original › malformed response → not inserted, not retried (388ms)
+  ✓  26 tests/e2e/workflow.spec.ts:200:3 › provider failures never change the original › answer instead of rewrite → blocked; Insert anyway never offered even when enabled (347ms)
+  ✓  27 tests/e2e/workflow.spec.ts:208:3 › provider failures never change the original › dropped details → blocked with Copy only (Insert anyway off by default) (325ms)
+  ✓  28 tests/e2e/workflow.spec.ts:219:3 › provider failures never change the original › dropped details with Insert anyway enabled → inserted only after explicit click, then undoable (375ms)
+  ✓  29 tests/e2e/workflow.spec.ts:233:3 › provider failures never change the original › already-clear prompt → unchanged (358ms)
+  ✓  30 tests/e2e/workflow.spec.ts:244:3 › request control › double trigger sends exactly one request (1.8s)
+  ✓  31 tests/e2e/workflow.spec.ts:253:3 › request control › cancel aborts and keeps the original (374ms)
+  ✓  32 tests/e2e/workflow.spec.ts:265:3 › request control › Esc cancels while enhancing (349ms)
+  ✓  33 tests/e2e/workflow.spec.ts:276:3 › request control › typing during the request prevents overwrite; Replace anyway is explicit (1.9s)
+  ✓  34 tests/e2e/workflow.spec.ts:291:3 › request control › possible secret → asks first; declining sends nothing (322ms)
+  ✓  35 tests/e2e/workflow.spec.ts:301:3 › request control › no key configured → opens settings, sends nothing (375ms)
+  ✓  36 tests/e2e/workflow.spec.ts:312:3 › request control › no consent → opens settings, sends nothing (394ms)
+  ✓  37 tests/e2e/workflow.spec.ts:323:3 › request control › request contains only the prompt and instructions; key only in the header (352ms)
+  ✓  38 tests/e2e/workflow.spec.ts:339:3 › options page › shows Groq, disables Gemini, tests the connection, saves settings (296ms)
+  ✓  39 tests/e2e/workflow.spec.ts:355:3 › options page › save and remove a key (302ms)
+
+  3 skipped
+  36 passed (21.3s)

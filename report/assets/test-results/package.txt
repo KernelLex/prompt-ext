@@ -1,0 +1,7 @@
+
+> prompt-enhancer@0.1.0 package
+> node scripts/build.mjs && node scripts/check-dist.mjs && node scripts/package.mjs
+
+Built production extension → dist/
+dist check passed: permissions exact, no test hooks, no local endpoints, no credential-like strings.
+Packaged → prompt-enhancer-0.1.0.zip

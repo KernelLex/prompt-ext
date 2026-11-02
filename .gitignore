@@ -2,8 +2,8 @@ node_modules/
 dist/
 dist-test/
 artifacts/
-test-results/
-playwright-report/
+/test-results/
+/playwright-report/
 eval/reports/live-*.json
 .env
 .env.*

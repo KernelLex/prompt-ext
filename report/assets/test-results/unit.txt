@@ -1,0 +1,125 @@
+
+ RUN  v5.0.5 <repo>
+
+ ✓ tests/unit/input-and-hint.test.ts > validateInput > rejects empty, whitespace, and too-short text 4ms
+ ✓ tests/unit/input-and-hint.test.ts > validateInput > rejects text over the size cap 34ms
+ ✓ tests/unit/input-and-hint.test.ts > validateInput > flags possible secrets without blocking 1ms
+ ✓ tests/unit/input-and-hint.test.ts > hintTaskType > write a python script that removes duplicate rows from a csv → coding 2ms
+ ✓ tests/unit/input-and-hint.test.ts > hintTaskType > Fix this bug:
+```js
+const a = 1
+``` → coding 2ms
+ ✓ tests/unit/input-and-hint.test.ts > hintTaskType > Find recent studies and sources on intermittent fasting → research 0ms
+ ✓ tests/unit/input-and-hint.test.ts > hintTaskType > Analyze the pros and cons of remote work for a startup → analysis 0ms
+ ✓ tests/unit/input-and-hint.test.ts > hintTaskType > Plan a 5 day itinerary for Lisbon → planning 0ms
+ ✓ tests/unit/input-and-hint.test.ts > hintTaskType > Write a short poem about autumn → creative 1ms
+ ✓ tests/unit/input-and-hint.test.ts > hintTaskType > Draft an email to my manager asking for Friday off → writing 0ms
+ ✓ tests/unit/input-and-hint.test.ts > hintTaskType > What is the boiling point of water at sea level? → factual 1ms
+ ✓ tests/unit/input-and-hint.test.ts > hintTaskType > hello there → other 4ms
+ ✓ tests/unit/pipeline.test.ts > enhancePrompt > returns enhanced text for a valid, faithful rewrite 11ms
+ ✓ tests/unit/pipeline.test.ts > enhancePrompt > makes no provider call for invalid input 1ms
+ ✓ tests/unit/pipeline.test.ts > enhancePrompt > reports unchanged when the model keeps the prompt 1ms
+ ✓ tests/unit/pipeline.test.ts > enhancePrompt > blocks results that fail validation, keeping the text for Copy 1ms
+ ✓ tests/unit/pipeline.test.ts > enhancePrompt > turns unparseable output into a malformed_response error 1ms
+ ✓ tests/unit/pipeline.test.ts > enhancePrompt > propagates provider errors without throwing 1ms
+ ✓ tests/unit/pipeline.test.ts > enhancePrompt > passes the prompt as delimited data and the selected mode 2ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — request > sends key only in the Authorization header, JSON mode, bounded tokens 6ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — request > adds reasoning headroom and low effort for reasoning models 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — request > default model is in the allowlist 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — request > listModels returns ids 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 401 2ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 403 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 404 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 400 decommissioned 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 400 json_validate_failed 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 400 other 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 413 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 429 per-minute 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 429 per-day 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 500 0ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > 503 0ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > network 0ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > truncated 0ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > empty content 0ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > non-json body 0ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > maps a timeout and a user cancel distinctly 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > never leaks the key in error messages 1ms
+ ✓ tests/unit/providers.test.ts > Groq adapter — error mapping > parses retry hints 0ms
+ ✓ tests/unit/providers.test.ts > withRetry > retries a transient error exactly once 0ms
+ ✓ tests/unit/providers.test.ts > withRetry > gives up after one retry (no loops) 1ms
+ ✓ tests/unit/providers.test.ts > withRetry > never retries auth 0ms
+ ✓ tests/unit/providers.test.ts > withRetry > never retries quota_exhausted 0ms
+ ✓ tests/unit/providers.test.ts > withRetry > never retries invalid_request 0ms
+ ✓ tests/unit/providers.test.ts > withRetry > never retries model_unavailable 0ms
+ ✓ tests/unit/providers.test.ts > withRetry > never retries malformed_response 0ms
+ ✓ tests/unit/providers.test.ts > withRetry > never retries cancelled 0ms
+ ✓ tests/unit/providers.test.ts > withRetry > does not wait on long rate-limit hints 0ms
+ ✓ tests/unit/providers.test.ts > circuit breaker > blocks after quota exhaustion until reset, then clears 1ms
+ ✓ tests/unit/providers.test.ts > describeError > always reassures that the text was not changed and offers sensible actions 4ms
+ ✓ tests/unit/output-validation.test.ts > extractPreservedItems > finds numbers, quotes, urls, code, emails, paths, mentions 4ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > passes a faithful rewrite 3ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > detects an unchanged prompt (whitespace-insensitive) 0ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > blocks empty output (blocking) 0ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > flags dropped numbers/quotes as overridable 1ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > tolerates thousands separators in numbers 1ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > blocks answer-instead-of-rewrite (not overridable) 0ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > blocks leaked markers and system text 1ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > blocks absurdly long output 6ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > flags a new code block as overridable 1ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > flags a language switch as overridable 1ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > warns (but passes) on large expansion 1ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > guesses common Latin-script languages and abstains when unsure 0ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > flags Spanish → English translation as overridable 0ms
+ ✓ tests/unit/output-validation.test.ts > validateOutput > dominantScript ignores short/mixed text 0ms
+ ✓ tests/unit/request-parse.test.ts > buildRequest > delimits the prompt with a per-request nonce and states it is data 2ms
+ ✓ tests/unit/request-parse.test.ts > buildRequest > system prompt carries the non-negotiable rules 0ms
+ ✓ tests/unit/request-parse.test.ts > buildRequest > sends nothing but instructions and the prompt (no page data fields) 1ms
+ ✓ tests/unit/request-parse.test.ts > buildRequest > random nonces differ between requests 3ms
+ ✓ tests/unit/request-parse.test.ts > buildRequest > bounds the output budget 0ms
+ ✓ tests/unit/request-parse.test.ts > buildRequest > has a versioned instruction set 0ms
+ ✓ tests/unit/request-parse.test.ts > parseEnhancement > parses a valid contract and drops unknown technique ids 1ms
+ ✓ tests/unit/request-parse.test.ts > parseEnhancement > tolerates a ```json fence 0ms
+ ✓ tests/unit/request-parse.test.ts > parseEnhancement > normalizes unknown task types and bad field types 1ms
+ ✓ tests/unit/request-parse.test.ts > parseEnhancement > rejects not json 0ms
+ ✓ tests/unit/request-parse.test.ts > parseEnhancement > rejects [1,2] 0ms
+ ✓ tests/unit/request-parse.test.ts > parseEnhancement > rejects {"text":"x"} 0ms
+ ✓ tests/unit/request-parse.test.ts > parseEnhancement > rejects Sure! Here's a better prompt: ... 0ms
+ ✓ tests/unit/eval-regression.test.ts > eval dataset > covers every category the plan requires (§20.1) 3ms
+ ✓ tests/unit/eval-regression.test.ts > eval dataset > every item is accepted by input validation and uses a known mode 3ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > fact-1 (good: unchanged) 1ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > fact-1 (bad: bloated with framework) 3ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > code-1 (good: explicit, preserves 50k) 3ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > code-1 (bad: dropped 50k and changed the task) 1ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > insufficient-1 (good: asks instead of inventing) 3ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > insufficient-1 (bad: placeholder) 1ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > adversarial-1 (good: keeps quoted text as data) 1ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > adversarial-1 (bad: dropped the order number) 1ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > adversarial-2 (bad: answered) 0ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > lang-1 (good: stays Spanish) 1ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > lang-1 (bad: translated) 5ms
+ ✓ tests/unit/eval-regression.test.ts > synthetic candidates — good rewrites pass, bad ones are caught > light-1 (bad: light mode over-structured) 0ms
+ ✓ tests/unit/settings.test.ts > settings > defaults: Groq, Balanced, remember keys, Insert anyway off 4ms
+ ✓ tests/unit/settings.test.ts > settings > repairs malformed stored data 1ms
+ ✓ tests/unit/settings.test.ts > settings > round-trips through storage 0ms
+ ✓ tests/unit/settings.test.ts > settings > requires consent at the current disclosure version 1ms
+ ✓ tests/unit/settings.test.ts > credentials > stores in exactly one place depending on preference 2ms
+ ✓ tests/unit/settings.test.ts > credentials > never stores keys inside the settings object 0ms
+ ✓ tests/unit/settings.test.ts > credentials > rejects empty keys 4ms
+ ✓ tests/unit/settings.test.ts > redaction and text helpers > redacts key-like strings 1ms
+ ✓ tests/unit/settings.test.ts > redaction and text helpers > masks keys 1ms
+ ✓ tests/unit/settings.test.ts > redaction and text helpers > detects secrets 1ms
+ ✓ tests/unit/settings.test.ts > redaction and text helpers > normalizes text for comparison 0ms
+ ✓ tests/unit/frameworks.test.ts > framework registry > contains every required framework and technique 2ms
+ ✓ tests/unit/frameworks.test.ts > framework registry > every definition is complete and documents provenance 2ms
+ ✓ tests/unit/frameworks.test.ts > framework registry > rejects duplicate or malformed ids 1ms
+ ✓ tests/unit/frameworks.test.ts > framework registry > a new technique is added with a definition only — no engine change 1ms
+ ✓ tests/unit/frameworks.test.ts > selectCatalog > light mode offers only minimal-edit techniques — never structure 1ms
+ ✓ tests/unit/frameworks.test.ts > selectCatalog > deep mode offers decomposition; balanced does not 0ms
+ ✓ tests/unit/frameworks.test.ts > selectCatalog > orders task-relevant techniques before irrelevant ones 0ms
+ ✓ tests/unit/frameworks.test.ts > selectCatalog > keeps the catalog within a token budget for every mode 0ms
+
+ Test Files  8 passed (8)
+      Tests  113 passed (113)
+   Start at  10:19:31
+   Duration  867ms (transform 63%, import 18%, tests 16%, worker 3%)
+
