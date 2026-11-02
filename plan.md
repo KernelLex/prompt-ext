@@ -381,7 +381,7 @@ Acronym meanings are **community conventions, not standards**. Several have comp
 
 ### 13.2 Progress and feedback
 - The action badge shows `…` while running, `✓` for 3 s on success, and `!` on error. The badge title (tooltip) carries the message. This is the **only** feedback channel on pages where scripts can't be injected (chrome://, the Web Store, PDF viewer).
-- The in-page toast sits in a closed shadow root, anchored bottom-right of the viewport, with `z-index` max and `pointer-events` only on the toast itself. Its states:
+- The in-page toast sits in a closed shadow root, with `z-index` max and `pointer-events` only on the toast itself. It is **anchored just above the focused field, right-aligned with it**, so it never covers the user's text. It falls back to the viewport's bottom-right when the field is too close to the top or no field was found. (Changed after the prototype in `docs/prototype/` showed a bottom-right toast hiding the end of the enhanced prompt.) Its states:
   - *Enhancing…* [Cancel]
   - *Enhanced* [Undo] (10 s)
   - *Already clear — no changes*

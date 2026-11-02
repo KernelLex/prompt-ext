@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Prompt Enhancer — UI prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Static UI prototype for plan review only. NOT extension code.
+  Render a state with mockup.html#<state>; see render.mjs for the list.
+  The host page is a generic, unbranded chat UI standing in for any supported site.
+-->
+<style>
+  :root {
+    --bg: #f6f7f9; --surface: #ffffff; --text: #1d2330; --muted: #5d6677; --border: #dfe3ea;
+    --accent: #4f46e5; --accent-weak: #eef0ff; --ok: #15803d; --ok-weak: #e8f6ec;
+    --warn: #a16207; --warn-weak: #fdf5e1; --err: #b42318; --err-weak: #fdecea;
+    --chrome: #e8eaee; --chrome-2: #f1f3f6;
+    --toast-bg: #111827; --toast-text: #f9fafb; --toast-muted: #c3c8d2; --toast-border: #2b3445;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text); background: var(--bg); }
+
+  /* ---------- fake browser chrome ---------- */
+  .browser { height: 100vh; display: flex; flex-direction: column; }
+  .tabs { background: var(--chrome); height: 36px; display: flex; align-items: flex-end; padding: 0 10px; gap: 4px; }
+  .tab { background: var(--chrome-2); border-radius: 8px 8px 0 0; padding: 7px 14px; font-size: 12px; color: var(--muted); min-width: 180px; }
+  .tab.active { background: var(--surface); color: var(--text); }
+  .toolbar { background: var(--surface); border-bottom: 1px solid var(--border); height: 44px; display: flex; align-items: center; padding: 0 12px; gap: 10px; }
+  .nav { color: var(--muted); font-size: 16px; letter-spacing: 8px; }
+  .omnibox { flex: 1; background: var(--chrome-2); border-radius: 18px; padding: 6px 14px; color: var(--muted); font-size: 13px; }
+  .ext { position: relative; width: 30px; height: 30px; border-radius: 6px; display: grid; place-items: center; }
+  .ext.highlight { background: var(--accent-weak); outline: 2px solid var(--accent); }
+  .ext svg { width: 20px; height: 20px; }
+  .badge { position: absolute; right: -4px; bottom: -3px; font-size: 9px; font-weight: 700; color: #fff; border-radius: 4px; padding: 0 3px; line-height: 13px; }
+  .badge.run { background: var(--accent); } .badge.ok { background: var(--ok); } .badge.err { background: var(--err); }
+  .tooltip { position: absolute; top: 36px; right: 0; white-space: nowrap; background: #2d3340; color: #fff; font-size: 12px; padding: 5px 8px; border-radius: 4px; z-index: 5; }
+  .viewport { flex: 1; position: relative; overflow: hidden; }
+
+  /* ---------- generic host chat page ---------- */
+  .chat { height: 100%; display: flex; flex-direction: column; align-items: center; background: #fbfbfc; }
+  .chat header { width: 100%; padding: 14px 24px; border-bottom: 1px solid var(--border); font-weight: 600; color: var(--muted); background: #fff; }
+  .thread { flex: 1; width: min(760px, 92%); padding: 28px 0; color: var(--muted); }
+  .bubble { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; max-width: 80%; }
+  .composer { width: min(760px, 92%); margin-bottom: 28px; background: #fff; border: 1px solid #cdd3dd; border-radius: 16px; padding: 12px 14px 10px; box-shadow: 0 2px 10px rgba(16,24,40,.06); }
+  .composer.focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,.15); }
+  .field { min-height: 48px; white-space: pre-wrap; font-size: 15px; outline: none; }
+  .field .caret { display: inline-block; width: 1.5px; height: 1.1em; background: var(--text); vertical-align: text-bottom; margin-left: 1px; }
+  .field.dim { opacity: .55; }
+  .composer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; color: var(--muted); font-size: 12px; }
+  .send { width: 32px; height: 32px; border-radius: 50%; background: #c9ced8; color: #fff; display: grid; place-items: center; font-weight: 700; }
+
+  /* ---------- extension toast (would live in a closed shadow root) ---------- */
+  .toast { position: absolute; right: 20px; bottom: 20px; width: 380px; background: var(--toast-bg); color: var(--toast-text);
+           border: 1px solid var(--toast-border); border-radius: 12px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.25); font-size: 13px; z-index: 10; }
+  .toast-head { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .toast-head .x { margin-left: auto; color: var(--toast-muted); font-weight: 400; }
+  .toast p { margin: 6px 0 0; color: var(--toast-muted); }
+  .toast .meta { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { font-size: 11px; padding: 1px 7px; border-radius: 10px; background: #263045; color: #d6dbe6; }
+  .actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .btn { border: 1px solid #3a455c; background: transparent; color: var(--toast-text); border-radius: 7px; padding: 5px 10px; font: inherit; font-size: 12px; }
+  .btn.primary { background: #6366f1; border-color: #6366f1; }
+  .kbd { font-size: 11px; color: var(--toast-muted); margin-left: auto; align-self: center; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot.ok { background: #22c55e; } .dot.err { background: #f87171; } .dot.warn { background: #fbbf24; } .dot.info { background: #93a3b8; }
+  .spinner { width: 14px; height: 14px; border: 2px solid #4b5568; border-top-color: #a5b4fc; border-radius: 50%; }
+  .progress { height: 3px; background: #263045; border-radius: 2px; margin-top: 10px; overflow: hidden; }
+  .progress > i { display: block; height: 100%; width: 45%; background: #818cf8; }
+  .timer { height: 2px; background: #263045; margin-top: 10px; } .timer > i { display:block; height:100%; width:70%; background:#22c55e; }
+
+  /* ---------- options page ---------- */
+  .opts { min-height: 100%; background: var(--bg); }
+  .opts-inner { width: min(720px, 92%); margin: 0 auto; padding: 26px 0; }
+  .opts h1 { font-size: 20px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+  .opts .sub { color: var(--muted); margin: 0 0 18px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; }
+  .card h2 { font-size: 14px; margin: 0 0 12px; }
+  .row { display: grid; grid-template-columns: 140px 1fr; gap: 10px 16px; align-items: center; margin-bottom: 10px; }
+  .row label { color: var(--muted); font-size: 13px; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .seg span { padding: 6px 14px; font-size: 13px; border-right: 1px solid var(--border); }
+  .seg span:last-child { border-right: 0; }
+  .seg .on { background: var(--accent); color: #fff; }
+  .input { border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; background: #fff; display: flex; justify-content: space-between; align-items: center; }
+  .input .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .lbtn { border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 6px 12px; font: inherit; font-size: 13px; }
+  .lbtn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .lbtn.danger { color: var(--err); }
+  .inline { display: flex; gap: 8px; align-items: center; }
+  .status { font-size: 12px; padding: 3px 9px; border-radius: 10px; }
+  .status.ok { background: var(--ok-weak); color: var(--ok); }
+  .status.warn { background: var(--warn-weak); color: var(--warn); }
+  .help { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+  .notice { background: var(--warn-weak); border: 1px solid #f2dfaa; border-radius: 10px; padding: 12px 14px; font-size: 13px; }
+  .notice b { display: block; margin-bottom: 4px; }
+  .check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; margin-top: 10px; }
+  .box { width: 16px; height: 16px; border: 1.5px solid #9aa3b2; border-radius: 4px; flex: none; margin-top: 1px; display: grid; place-items: center; font-size: 11px; color: #fff; }
+  .box.on { background: var(--accent); border-color: var(--accent); }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .step { border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 13px; }
+  .step .n { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-weak); color: var(--accent); font-weight: 700; display: grid; place-items: center; margin-bottom: 6px; font-size: 12px; }
+  .step.done .n { background: var(--ok-weak); color: var(--ok); }
+  kbd { font: 11px ui-monospace, monospace; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: #fff; }
+  .caption { position: absolute; left: 16px; bottom: 20px; background: rgba(17,24,39,.85); color: #fff; font-size: 12px; padding: 6px 10px; border-radius: 6px; z-index: 9; max-width: 225px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="browser">
+  <div class="tabs"><div class="tab active" id="tabTitle">Example AI Chat</div><div class="tab">New Tab</div></div>
+  <div class="toolbar">
+    <span class="nav">← → ⟳</span>
+    <div class="omnibox" id="url">https://chat.example.com/</div>
+    <div class="ext" id="ext" title="Prompt Enhancer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16 10.2 11.3 5.5 9.5 10.2 7.7z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>
+      </svg>
+      <span class="badge hidden" id="badge"></span>
+      <span class="tooltip hidden" id="tooltip"></span>
+    </div>
+  </div>
+
+  <div class="viewport">
+    <!-- Host page -->
+    <div class="chat" id="chat">
+      <header>Example AI Chat</header>
+      <div class="thread">
+        <div class="bubble">Hi! What would you like help with today?</div>
+      </div>
+      <div class="composer focus" id="composer">
+        <div class="field" id="field"></div>
+        <div class="composer-row"><span>Shift+Enter for newline</span><span class="send">↑</span></div>
+      </div>
+    </div>
+
+    <!-- Options page -->
+    <div class="opts hidden" id="opts">
+      <div class="opts-inner" id="optsInner"></div>
+    </div>
+
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+    <div class="caption hidden" id="caption"></div>
+  </div>
+</div>
+
+<script>
+const ROUGH = "write a python script that cleans up my csv file, remove duplicates and fix the dates, it has like 50k rows";
+const ENHANCED =
+`Write a Python script that cleans a CSV file of about 50,000 rows.
+
+Requirements:
+1. Remove duplicate rows.
+2. Normalize the date columns to a single consistent format (e.g. ISO 8601, YYYY-MM-DD).
+3. Write the cleaned data to a new CSV file without modifying the original.
+
+Before writing the code, ask me for anything critical you can't infer — such as which columns contain dates, what the current date formats are, and what counts as a duplicate (identical rows or matching key columns).
+
+Return the complete script with brief comments, plus a short note on how to run it.`;
+const SHORT = "What is the boiling point of water at sea level in Fahrenheit?";
+
+const $ = (id) => document.getElementById(id);
+function setField(text, { caret = true, dim = false } = {}) {
+  const f = $("field"); f.textContent = text; f.classList.toggle("dim", dim);
+  if (caret) { const c = document.createElement("span"); c.className = "caret"; f.appendChild(c); }
+}
+function badge(kind, text, tip, highlight = false) {
+  const b = $("badge"); b.className = "badge " + kind; b.textContent = text; b.classList.remove("hidden");
+  if (tip) { $("tooltip").textContent = tip; $("tooltip").classList.remove("hidden"); }
+  $("ext").classList.toggle("highlight", highlight);
+}
+function toast(html) {
+  const t = $("toast"); t.innerHTML = html; t.classList.remove("hidden");
+  // Anchored just above the focused field (right-aligned) so it never covers the user's text.
+  const vp = document.querySelector(".viewport").getBoundingClientRect();
+  const c = $("composer").getBoundingClientRect();
+  if (!$("chat").classList.contains("hidden") && c.height) {
+    t.style.right = (vp.right - c.right) + "px";
+    t.style.bottom = (vp.bottom - c.top + 10) + "px";
+  }
+}
+function caption(text) { const c = $("caption"); c.textContent = text; c.classList.remove("hidden"); }
+const head = (dot, title) => `<div class="toast-head">${dot}<span>${title}</span><span class="x">✕</span></div>`;
+
+function showOptions(inner, url = "chrome-extension://…/options.html", title = "Prompt Enhancer — Settings") {
+  $("chat").classList.add("hidden"); $("opts").classList.remove("hidden");
+  $("url").textContent = url; $("tabTitle").textContent = title; $("optsInner").innerHTML = inner;
+}
+
+const logo = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16 10.2 11.3 5.5 9.5 10.2 7.7z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>`;
+
+const states = {
+  "01-before": () => {
+    setField(ROUGH);
+    badge("run", "", null, true); $("badge").classList.add("hidden");
+    caption("1 · User types a rough prompt, then clicks the toolbar icon or presses Alt+Shift+E.");
+  },
+  "02-enhancing": () => {
+    setField(ROUGH, { caret: false });
+    badge("run", "…", "Prompt Enhancer: enhancing with Groq…");
+    toast(head(`<span class="spinner"></span>`, "Enhancing prompt…") +
+      `<p>Sending only this text box to <b>Groq</b> (llama-3.3-70b-versatile). Your text is unchanged until the result is checked.</p>
+       <div class="progress"><i></i></div>
+       <div class="actions"><button class="btn">Cancel</button><span class="kbd">Esc</span></div>`);
+    caption("2 · Progress state. A second press is ignored while this request is in flight.");
+  },
+  "03-enhanced": () => {
+    setField(ENHANCED);
+    badge("ok", "✓", "Prompt Enhancer: enhanced");
+    toast(head(`<span class="dot ok"></span>`, "Prompt enhanced — not sent") +
+      `<p>Clarified the requirements, defined the output, and asked the AI to check details instead of guessing them.</p>
+       <div class="meta"><span class="chip">Coding</span><span class="chip">Explicit instructions</span><span class="chip">Output format</span><span class="chip">Balanced</span></div>
+       <div class="actions"><button class="btn primary">Undo</button><span class="kbd">or Alt+Shift+Z</span></div>
+       <div class="timer"><i></i></div>`);
+    caption("3 · Enhanced text replaces the same field. Nothing is submitted; the user reviews and presses Send.");
+  },
+  "04-already-clear": () => {
+    setField(SHORT);
+    badge("ok", "✓", "Prompt Enhancer: no changes needed");
+    toast(head(`<span class="dot info"></span>`, "Already clear — no changes") +
+      `<p>This question is specific enough. Your text was left as is.</p>
+       <div class="meta"><span class="chip">Factual</span><span class="chip">Balanced</span></div>`);
+    caption("4 · Short, effective prompts stay short: brevity is preserved, not padded.");
+  },
+  "05-error-auth": () => {
+    setField(ROUGH);
+    badge("err", "!", "Prompt Enhancer: Groq rejected the API key");
+    toast(head(`<span class="dot err"></span>`, "Groq rejected your API key") +
+      `<p>Your original text is untouched. Check or replace the key in Settings.</p>
+       <div class="actions"><button class="btn primary">Open settings</button><button class="btn">Try with Gemini</button><button class="btn">Dismiss</button></div>`);
+    caption("5 · Errors never alter the field. Other providers are offered only as an explicit, one-off choice.");
+  },
+  "06-error-quota": () => {
+    setField(ROUGH);
+    badge("err", "!", "Prompt Enhancer: Groq daily quota reached");
+    toast(head(`<span class="dot warn"></span>`, "Groq daily quota reached") +
+      `<p>Free-tier limit hit. Resets around 00:00 UTC. No retries will be sent until then. Your text is untouched.</p>
+       <div class="actions"><button class="btn">Try with Gemini</button><button class="btn">Dismiss</button></div>`);
+    caption("6 · Quota exhaustion trips a local circuit breaker: no repeated failing requests.");
+  },
+  "07-field-changed": () => {
+    setField(ROUGH + " and also export a summary of how many rows were removed");
+    badge("ok", "✓", "Prompt Enhancer: result ready");
+    toast(head(`<span class="dot warn"></span>`, "You edited the text while it was enhancing") +
+      `<p>The enhanced version was not inserted so your new typing isn't overwritten.</p>
+       <div class="actions"><button class="btn primary">Replace anyway</button><button class="btn">Copy enhanced</button><button class="btn">Dismiss</button></div>`);
+    caption("7 · If the field changed during the request, the extension asks instead of overwriting.");
+  },
+  "08-validation-failed": () => {
+    setField("Summarize this in under 120 words for a board update: \"Q3 revenue was $4.2M, up 18%…\"");
+    badge("err", "!", "Prompt Enhancer: result failed checks");
+    toast(head(`<span class="dot warn"></span>`, "Result didn’t pass safety checks") +
+      `<p>The rewrite dropped details from your prompt (<b>“under 120 words”</b>, <b>“$4.2M”</b>). Nothing was inserted.</p>
+       <div class="actions"><button class="btn">Copy result</button><button class="btn">Insert anyway</button><button class="btn">Retry</button></div>`);
+    caption("8 · Local validation blocks rewrites that lose numbers, quotes, code, or constraints. (“Insert anyway” pending Q3.)");
+  },
+  "09-unsupported": () => {
+    $("chat").innerHTML = `<header>Example Docs</header><div class="thread" style="text-align:center;padding-top:80px">
+      <div style="width:520px;height:300px;margin:0 auto;background:#fff;border:1px solid var(--border);border-radius:6px;display:grid;place-items:center;color:var(--muted)">[ canvas-rendered document editor ]</div></div>`;
+    $("url").textContent = "https://docs.example.com/document/123"; $("tabTitle").textContent = "Example Docs";
+    badge("err", "!", "Prompt Enhancer: this editor isn’t supported");
+    toast(head(`<span class="dot info"></span>`, "This editor isn’t supported") +
+      `<p>Couldn’t find a text box the extension can safely read and update. Nothing was sent.</p>
+       <div class="actions"><button class="btn">See supported sites</button><button class="btn">Dismiss</button></div>`);
+    caption("9 · Unsupported fields (canvas editors, password fields, cross-origin iframes) get a clear message; no data leaves.");
+  },
+  "10-options": () => showOptions(`
+    <h1>${logo} Prompt Enhancer</h1>
+    <p class="sub">Settings are stored in this browser profile only.</p>
+    <div class="card">
+      <h2>Provider</h2>
+      <div class="row"><label>Active provider</label><div><span class="seg"><span class="on">Groq</span><span>Gemini</span></span></div></div>
+      <div class="row"><label>Groq API key</label>
+        <div class="inline"><div class="input" style="flex:1"><span class="mono">gsk_••••••••••••••••a91f</span><span style="color:var(--muted)">👁</span></div>
+          <button class="lbtn">Replace</button><button class="lbtn danger">Remove</button></div></div>
+      <div class="row"><label>Model</label><div class="input"><span>llama-3.3-70b-versatile</span><span>▾</span></div></div>
+      <div class="row"><label></label><div class="inline"><button class="lbtn primary">Test connection</button><span class="status ok">✓ Connected · 412 ms</span></div></div>
+      <div class="row"><label></label><div class="check" style="margin:0"><span class="box"></span><span>Forget my key when the browser closes<p class="help">Safer on shared machines; you’ll re-enter it after each restart.</p></span></div></div>
+    </div>
+    <div class="card">
+      <h2>Enhancement</h2>
+      <div class="row"><label>Mode</label><div><span class="seg"><span>Light</span><span class="on">Balanced</span><span>Deep</span></span>
+        <p class="help">Balanced: clarifies instructions and adds format or constraints only where they help.</p></div></div>
+      <div class="row"><label>Shortcuts</label><div><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> enhance · <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> restore original
+        <p class="help">Change them at chrome://extensions/shortcuts</p></div></div>
+    </div>
+    <div class="card">
+      <h2>Data &amp; privacy</h2>
+      <p class="help" style="font-size:13px;color:var(--text)">Only the text in the focused box is sent, to the provider selected above, using your key. No page content, history, or analytics.</p>
+      <div class="row" style="margin-top:10px"><label>Groq consent</label><div><span class="status ok">Accepted 2 Nov 2026</span></div></div>
+      <div class="row"><label>Gemini consent</label><div><span class="status warn">Not given — required before use</span></div></div>
+    </div>`),
+  "11-first-run": () => showOptions(`
+    <h1>${logo} Welcome to Prompt Enhancer</h1>
+    <p class="sub">Improve the prompt in any supported text box, right where you type it. It never sends your message for you.</p>
+    <div class="card">
+      <div class="steps">
+        <div class="step done"><div class="n">✓</div><b>Add an API key</b><div class="help">Groq or Gemini, your own key.</div></div>
+        <div class="step"><div class="n">2</div><b>Click into a prompt box</b><div class="help">On a supported site.</div></div>
+        <div class="step"><div class="n">3</div><b>Press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd></b><div class="help">Or click the toolbar icon.</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Before your first enhancement</h2>
+      <div class="notice"><b>What gets sent to Groq</b>
+        When you press Enhance, the text in the focused box — and nothing else from the page — is sent to Groq using your API key.
+        Groq may keep request logs for up to 30 days unless you enable Zero Data Retention in your Groq console.
+        Don’t enhance text that contains passwords, keys, or other secrets.</div>
+      <div class="check"><span class="box on">✓</span><span>I understand what is sent to Groq and want to enable it.</span></div>
+      <div class="inline" style="margin-top:14px"><button class="lbtn primary">Continue</button><span class="help">You can change this anytime in Settings.</span></div>
+    </div>`, "chrome-extension://…/options.html#welcome", "Welcome — Prompt Enhancer"),
+};
+
+const key = location.hash.slice(1) || "01-before";
+(states[key] || states["01-before"])();
+</script>
+</body>
+</html>
