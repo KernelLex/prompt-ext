@@ -1,0 +1,18 @@
+Resolve all open questions in §23 of `plan.md` using the following decisions. Prioritize the fastest path to a working, testable MVP. Make reasonable technical decisions independently, document them, and do not ask me to approve routine implementation choices.
+
+1. Groq first: Approved. Implement Groq as the first provider using the best currently available model for prompt rewriting within its eligible free-tier limits. Keep the provider interface modular so Gemini can be added without changing the enhancement engine.
+2. Gemini and data privacy: Defer Gemini integration until after the Groq MVP works. Before adding Gemini, verify the current official terms, free-tier data-use policies, and geographic restrictions. Do not assume my location or that I consent to provider data use. Make Gemini an optional, disabled-until-configured provider. Do not make Gemini a blocker for the MVP.
+3. Failed output validation: Never replace the original prompt automatically when validation fails. Offer Copy as the safe fallback. Only show Insert anyway if the user explicitly requests it and the result is not unsafe or structurally invalid. Preserve the original prompt in every failure scenario.
+4. Missing information: Do not invent facts, requirements, or context. Do not insert arbitrary placeholders. Preserve uncertainty explicitly and, when useful, instruct the target AI to ask concise clarifying questions before proceeding. Avoid unnecessary clarification instructions for simple prompts.
+5. Website targets: Start with standard HTML textareas, text inputs, and accessible `contenteditable` fields. Use these as the primary test targets, then test one popular AI chat interface if it can be accessed reliably. Do not block development on website-specific integrations. Document unsupported editors and cross-origin iframe limitations.
+6. Distribution: Design for personal use first, but keep the architecture suitable for possible future Chrome Web Store publication. Do not build a backend, authentication system, analytics, billing, or other infrastructure unless required for the MVP. Clearly document the security limitations of direct client-side API keys and what would need to change before public distribution.
+7. Permissions and live tests: Use the minimum necessary permissions. Do not automatically allow blocked domains, bypass security restrictions, or request broader access without justification. Use mocked provider responses and automated tests by default. If live API tests are possible, make them optional and require valid credentials supplied through session environment variables or an appropriate local secret mechanism. Never commit keys or expose them in logs, source code, build artifacts, or error messages. Do not block implementation if credentials are unavailable.
+
+Execution instructions
+
+* Read `plan.md` and resolve every open question in §23 using these decisions.
+* Update the architecture, provider strategy, privacy assumptions, testing plan, risk register, and acceptance criteria accordingly.
+* Record these decisions in the plan so they are not repeatedly raised.
+* Make no unnecessary architectural changes.
+* Implement the smallest complete MVP in milestone order.
+* Run availa

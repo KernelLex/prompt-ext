@@ -21,7 +21,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["scripts/**/*.mjs", "tests/**/*.{ts,tsx,mjs}", "eval/**/*.ts"],
+    files: ["scripts/**/*.mjs", "report/**/*.mjs", "tests/**/*.{ts,tsx,mjs}", "eval/**/*.ts"],
     languageOptions: { globals: { process: "readonly", console: "readonly", URL: "readonly" } },
   },
   {

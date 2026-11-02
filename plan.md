@@ -206,13 +206,13 @@ sequenceDiagram
 | Language | JS, TypeScript | **TypeScript (strict)** | Typed message contracts and adapter interfaces catch the bugs that matter most here. |
 | UI | React, Preact, Lit, vanilla | **Vanilla TS + plain CSS** | The UI is one options form and one toast. A framework adds bundle weight and, inside the page, risks conflicting with the host page. The toast must be tiny and isolated in a closed shadow root. |
 | Build | Vite + CRXJS plugin, webpack, plain `tsc`, **esbuild** | **esbuild via a ~60-line `scripts/build.mjs`** | Three entry points (service worker, content script, options) plus static copying. esbuild is one dependency and fast. CRXJS adds HMR, which is convenient but brings plugin churn risk. Plain `tsc` cannot bundle the content script. |
-| Unit tests | Jest, **Vitest** | **Vitest** + `happy-dom` where DOM is needed | Fast, ESM-native, little config. |
+| Unit tests | Jest, **Vitest** | **Vitest** | Fast, ESM-native, little config. |
 | Browser/E2E | Puppeteer, **Playwright** | **Playwright** (Chromium preinstalled in this environment) loading the unpacked extension via `launchPersistentContext` | Real `execCommand`, `beforeinput`, and editor behavior can only be tested in a real browser. jsdom/happy-dom do not implement `execCommand`. Loading extensions in headless Chromium needs the new headless mode **[A — confirm in M0]**. |
 | Editor fixtures | Hand-written fakes, **real editor libraries as devDependencies** | Real libraries (ProseMirror, Lexical, Quill, Slate+React, CodeMirror 6) on local fixture pages | The editors on real sites are built on these. Testing against fakes would prove nothing. |
 | Lint/format | ESLint + typescript-eslint, Prettier | **ESLint (flat config) + typescript-eslint + Prettier** | Standard and low maintenance. |
 | Runtime deps | Zod, provider SDKs | **None** | The Groq and Gemini SDKs target Node/servers, inflate the bundle, and hide request details we need to control: headers, abort, error bodies. Response validation is small enough to hand-write. |
 
-Expected devDependencies: `typescript`, `esbuild`, `vitest`, `happy-dom`, `@playwright/test` (pinned to the preinstalled version), `eslint`, `typescript-eslint`, `prettier`, `@types/chrome`, plus editor libraries used only in test fixtures. **Production bundle: zero third-party runtime code.**
+Expected devDependencies: `typescript`, `esbuild`, `vitest`, `@playwright/test` (pinned to the preinstalled version), `eslint`, `typescript-eslint`, `prettier`, `@types/chrome`, plus editor libraries used only in test fixtures. **Production bundle: zero third-party runtime code.**
 
 ## 9. AI provider comparison
 
@@ -598,7 +598,7 @@ Each milestone ends with: lint + typecheck + tests green, `plan.md` checklist up
 | Layer | Tool | What |
 |---|---|---|
 | Unit | Vitest | Engine (every stage), registry/select, parser (fenced/garbled/partial JSON), validator rule table, adapters (wire mapping, error mapping, redaction), retry/circuit (fake timers), settings migrations, message guards |
-| DOM unit | Vitest + happy-dom | Field locator (shadow roots, rejected input types), capture serialization |
+| DOM unit | *(replaced, see §25 I11)* | Field locator and capture are covered in real Chromium by the browser tests instead |
 | Browser E2E | Playwright + unpacked extension | Fixture editors (§17). Lock and duplicate prevention. Cancel. Undo. Field-changed detection. **Never-submit assertion:** every fixture has a form/Enter/Send handler that fails the test if fired. Unsupported pages (`chrome://`) show the badge error. |
 | Provider integration (mock) | Local HTTP mock server + test build | Every error class end to end, timeout, slow responses, malformed bodies |
 | Provider integration (live) | `npm run eval:live` (opt-in) | Real Groq calls. Skipped automatically unless `GROQ_API_KEY` is set (D7). Never in CI. The key is read from the env at runtime only and never written to disk, logs, or reports. |
@@ -758,3 +758,4 @@ Routine decisions made during implementation (D-instructions: decide, record, do
 | I8 | Undo toast "10 s" (FR23) | As planned. Plus native Ctrl+Z works for textareas because insertion uses `execCommand` | — |
 | I9 | Default Groq model (§9) | `openai/gpt-oss-120b` with `reasoning_effort: "low"` plus reasoning token headroom | D1: best instruction-following among free-tier candidates. **Unverified live.** Switchable in settings. |
 | I10 | User supplied a real Groq key in chat | Not written to any file, commit, log, or report. Not used, because no request could reach Groq. The user should rotate it. | D7 |
+| I11 | DOM unit tests with happy-dom (§19) | Dropped; field locator, capture, and insertion are tested only in real Chromium (Playwright) | Simulated DOMs lack `execCommand` and real editor behavior. Real-browser tests are stronger evidence. One less dependency. |

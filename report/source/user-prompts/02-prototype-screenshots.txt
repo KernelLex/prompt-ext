@@ -1,0 +1,1 @@
+generate prototype screenshots and save it in the repo first

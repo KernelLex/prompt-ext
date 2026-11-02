@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{margin:0;font:13px/1.35 "Helvetica Neue",Arial,sans-serif;color:#1d2330;background:#fff}
+.row{display:flex;align-items:stretch;gap:0;padding:20px;width:1160px}
+.s{flex:1;border:1.5px solid #4f46e5;background:#f4f5ff;border-radius:10px;padding:10px;margin-right:22px;position:relative;min-height:150px}
+.s.m{background:#fff7e6;border-color:#d97706}
+.s.v{background:#ecfdf3;border-color:#15803d}
+.s:not(:last-child)::after{content:"";position:absolute;right:-20px;top:50%;border:8px solid transparent;border-left:12px solid #111827;transform:translateY(-50%)}
+.s b{display:block;margin-bottom:4px}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:8px;background:#e0e7ff;color:#3730a3;margin-bottom:6px}
+.m .tag{background:#fde68a;color:#92400e}.v .tag{background:#bbf7d0;color:#14532d}
+.small{font-size:11.5px;color:#374151}
+.legend{padding:0 20px 16px;font-size:12px;color:#5d6677}
+</style></head><body>
+<div class="row">
+<div class="s"><span class="tag">LOCAL</span><b>1 Validate input</b><div class="small">Empty / too short / &gt;12k chars → stop, no call. Secret-like text → ask first.</div></div>
+<div class="s"><span class="tag">LOCAL</span><b>2 Task hint</b><div class="small">Regex scoring → coding, research, writing, analysis, factual, planning, creative, other. Advisory only.</div></div>
+<div class="s"><span class="tag">LOCAL</span><b>3 Catalog</b><div class="small">Registry filtered by mode; task-relevant techniques first. Light = no structure.</div></div>
+<div class="s m"><span class="tag">ONE MODEL CALL</span><b>4 Analyse + rewrite</b><div class="small">Intent, classification, quality gaps, technique choice and rewrite, returned as one JSON object.</div></div>
+<div class="s"><span class="tag">LOCAL</span><b>5 Parse</b><div class="small">Shared contract: enhanced_prompt, changed, task_type, techniques, missing_info, notes.</div></div>
+<div class="s v"><span class="tag">LOCAL</span><b>6 Validate output</b><div class="small">Blocking: empty, oversized, leakage, answered-instead.<br>Overridable: dropped details, new code block, language switch.</div></div>
+<div class="s"><span class="tag">PAGE</span><b>7 Replace</b><div class="small">Only if valid and field unchanged; strategy chain + read-back; Undo kept.</div></div>
+</div>
+<div class="legend">Blue = deterministic local code (unit-tested) · Amber = the single provider request · Green = safety gate before any editor change. A failure at any stage leaves the original text untouched.</div>
+</body></html>

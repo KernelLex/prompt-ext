@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{margin:0;font:13px/1.35 "Helvetica Neue",Arial,sans-serif;color:#1d2330;background:#fff}
+.wrap{position:relative;width:1200px;height:760px}
+.zone{position:absolute;box-sizing:border-box;border:2px dashed #b9c0cc;border-radius:14px;padding:30px 12px 12px}
+.zone>.zt{position:absolute;top:8px;left:14px;font-weight:700;font-size:13px;color:#5d6677;text-transform:uppercase;letter-spacing:.04em}
+.box{position:absolute;background:#f4f5ff;border:1.5px solid #4f46e5;border-radius:10px;padding:8px 10px;box-sizing:border-box}
+.box b{display:block;color:#312e81;margin-bottom:3px;font-size:13.5px}
+.box.ext{background:#fff7e6;border-color:#d97706}.box.ext b{color:#92400e}
+.box.store{background:#ecfdf3;border-color:#15803d}.box.store b{color:#14532d}
+.box.page{background:#f8fafc;border-color:#64748b}.box.page b{color:#334155}
+.small{font-size:11.5px;color:#374151}
+ul{margin:2px 0 0 14px;padding:0} li{margin:0}
+svg{position:absolute;inset:0;pointer-events:none}
+.lbl{font:600 11.5px "Helvetica Neue",Arial,sans-serif;fill:#111827}
+.num{font:700 12px "Helvetica Neue",Arial,sans-serif;fill:#fff}
+</style></head><body><div class="wrap">
+<div class="zone" style="left:10px;top:10px;width:330px;height:560px"><span class="zt">Web page (any site)</span></div>
+<div class="box page" style="left:30px;top:60px;width:290px;height:120px"><b>Focused editor</b><div class="small">textarea · text input · contenteditable · open shadow root · ProseMirror<br><i>Refused:</i> password/email/number fields, closed shadow roots, cross-origin iframes</div></div>
+<div class="box" style="left:30px;top:250px;width:290px;height:300px"><b>Content script (injected on demand)</b><div class="small">isolated world · main frame only<ul>
+<li>Field locator (focus → open shadow roots)</li><li>Capture (value / innerText)</li><li>Insertion strategy chain:<br>execCommand insertText → native setter → synthetic text/plain paste</li><li>Read-back verification + rollback</li><li>Field-changed guard</li><li>Undo snapshot (page memory)</li><li>Toast UI (closed shadow root): progress, Undo, Cancel, Copy, errors</li></ul><br><i>No network access · never sees the API key · never submits</i></div></div>
+
+<div class="zone" style="left:380px;top:10px;width:470px;height:560px"><span class="zt">Extension service worker (MV3)</span></div>
+<div class="box" style="left:400px;top:60px;width:430px;height:110px"><b>Orchestrator</b><div class="small">Triggers: toolbar click · Alt+Shift+E · Alt+Shift+Z (restore)<br>Per-tab in-flight lock · Cancel (AbortController) · setup/consent gate<br>Secret-pattern confirmation · badge status</div></div>
+<div class="box" style="left:400px;top:190px;width:430px;height:220px"><b>Enhancement engine (pure TypeScript)</b><div class="small"><ul>
+<li>1 Input validation (empty / size cap 12k chars / secret warning)</li>
+<li>2 Task-type hint (deterministic, advisory)</li>
+<li>3 Framework registry → mode-filtered technique catalog</li>
+<li>4 Request builder (system rules + nonce-delimited prompt)</li>
+<li>5 <b style="display:inline;color:#92400e">ONE provider call</b> (intent + classification + selection + rewrite)</li>
+<li>6 Response parser (shared JSON contract)</li>
+<li>7 Output validator: preservation · answer-instead · leakage · language · length</li></ul></div></div>
+<div class="box" style="left:400px;top:430px;width:430px;height:120px"><b>Provider layer</b><div class="small">ProviderAdapter interface · ProviderError taxonomy (auth, quota, rate-limit, server, timeout, malformed…)<br>Bounded retry (≤ 1, transient only) · quota circuit breaker · key redaction<br>Registry: Groq (MVP) · Gemini deferred (D2)</div></div>
+
+<div class="zone" style="left:890px;top:10px;width:300px;height:330px"><span class="zt">External</span></div>
+<div class="box ext" style="left:910px;top:60px;width:260px;height:120px"><b>Groq adapter</b><div class="small">POST /openai/v1/chat/completions<br>Authorization: Bearer &lt;key&gt; (header only)<br>JSON mode · default openai/gpt-oss-120b<br>reasoning_effort "low"</div></div>
+<div class="box ext" style="left:910px;top:220px;width:260px;height:100px"><b>Groq API</b><div class="small">api.groq.com (optional host permission requested on key save)<br>Receives: instructions + prompt text only</div></div>
+
+<div class="zone" style="left:380px;top:600px;width:810px;height:145px"><span class="zt">Extension pages &amp; storage</span></div>
+<div class="box" style="left:400px;top:640px;width:430px;height:90px"><b>Options page</b><div class="small">Key save/remove/test · model · mode · consent · remember-key toggle · "Insert anyway" opt-in (off)</div></div>
+<div class="box store" style="left:860px;top:640px;width:310px;height:90px"><b>chrome.storage</b><div class="small">local: settings, key (if remembered)<br>session: key (if not remembered), circuit state</div></div>
+
+<svg viewBox="0 0 1200 760">
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#111827"/></marker></defs>
+<g stroke="#111827" stroke-width="1.8" fill="none" marker-end="url(#a)">
+<path d="M400 100 C 360 100, 360 280, 322 280"/>
+<path d="M175 250 L175 184"/>
+<path d="M322 320 C 360 320, 360 250, 398 250"/>
+<path d="M830 330 C 870 330, 870 120, 908 120"/>
+<path d="M1040 182 L1040 218"/>
+<path d="M908 290 C 860 290, 860 380, 832 380"/>
+<path d="M398 520 C 355 520, 355 470, 322 470"/>
+<path d="M615 638 L615 552"/>
+<path d="M832 685 L858 685"/>
+</g>
+<g><circle cx="362" cy="160" r="11" fill="#4f46e5"/><text class="num" x="358" y="164">1</text><text class="lbl" x="402" y="184">① inject content script + capture field</text></g>
+<g><circle cx="190" cy="217" r="11" fill="#4f46e5"/><text class="num" x="186" y="221">2</text><text class="lbl" x="205" y="221">read text</text></g>
+<g><circle cx="360" cy="300" r="11" fill="#4f46e5"/><text class="num" x="356" y="304">3</text><text class="lbl" x="402" y="425">③ prompt text only → engine</text></g>
+<g><circle cx="868" cy="230" r="11" fill="#d97706"/><text class="num" x="864" y="234">4</text><text class="lbl" x="840" y="210">HTTPS</text></g>
+<g><circle cx="864" cy="350" r="11" fill="#d97706"/><text class="num" x="860" y="354">5</text><text class="lbl" x="845" y="400">JSON result</text></g>
+<g><circle cx="356" cy="495" r="11" fill="#15803d"/><text class="num" x="352" y="499">6</text><text class="lbl" x="30" y="563">⑥ apply → read-back verify → Undo available</text></g>
+</svg>
+</div></body></html>

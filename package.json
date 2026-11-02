@@ -29,7 +29,6 @@
     "@types/react-dom": "^19.3.0",
     "esbuild": "^0.28.2",
     "eslint": "^10.14.0",
-    "happy-dom": "^21.0.4",
     "prosemirror-model": "^1.25.12",
     "prosemirror-schema-basic": "^1.2.5",
     "prosemirror-state": "^1.4.4",

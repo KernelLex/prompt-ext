@@ -1,0 +1,511 @@
+PROJECT: AI-Powered Prompt Enhancement Chrome Extension
+1. ROLE — WHO YOU ARE
+Act as a senior software architect, Chrome Extension engineer, AI integration specialist, prompt engineering expert, UX designer, and QA engineer.
+Your responsibility is to design and build a reliable, secure, maintainable Chrome extension that improves user-written prompts using established prompt engineering principles and frameworks.
+Think critically. Challenge weak assumptions, investigate technical limitations, and justify architectural decisions. Do not build features merely because they sound impressive.
+Work in clearly defined phases with measurable deliverables.
+Your first task is to inspect the repository and create `plan.md`. Do not implement the extension until I have reviewed and explicitly approved the plan.
+Do not skip this requirement, even if you believe the implementation is straightforward.
+2. CONTEXT — WHAT WE ARE BUILDING
+I want a Chrome extension that improves prompts directly inside editable text fields on websites.
+The core experience should be:
+
+1. The user types a prompt into a text field on a supported website.
+2. The user activates the extension using a toolbar button, keyboard shortcut, or another approved interaction.
+3. The extension captures the prompt from the active editable field.
+4. An enhancement engine analyzes the prompt, identifies the task, and chooses suitable prompt engineering techniques.
+5. The engine rewrites the prompt to improve clarity, structure, specificity, and expected output quality.
+6. The enhanced prompt replaces the original text in the same field.
+7. The user can inspect the result, undo the replacement, and restore the original prompt.
+8. The user decides whether to submit the enhanced prompt.
+
+The extension must never submit the prompt automatically.
+The user should not need to open a separate dashboard or manually copy and paste prompts between applications.
+The product should work across multiple supported websites, including AI chat interfaces, coding tools, writing applications, and research tools.
+Do not promise compatibility with every website. Define a realistic support matrix and test actual editor behavior.
+Core product philosophy
+The extension should optimize for prompt effectiveness, not prompt length.
+A short question should remain short when it is already effective. A complex task should receive more structure when that structure meaningfully improves the instructions.
+The extension must preserve the user's intent, facts, terminology, constraints, and desired outcome.
+It must not fabricate missing context, introduce arbitrary requirements, or change the user's objective.
+3. OBJECTIVES — PRODUCT REQUIREMENTS
+3.1 Prompt capture and replacement
+The extension must:
+
+* Detect the active editable field when enhancement is requested.
+* Read its current text accurately.
+* Preserve the original prompt before making any changes.
+* Send only the necessary prompt content and explicitly approved context to the selected AI provider.
+* Insert the enhanced prompt into the same field.
+* Trigger the appropriate input events for supported websites.
+* Preserve focus wherever possible.
+* Avoid duplicate enhancement requests from repeated clicks.
+* Allow the user to cancel or recover from failed requests where practical.
+* Provide reliable undo and restoration of the original text.
+* Never submit the prompt, click Send, or execute the user's instructions.
+
+Investigate support for:
+
+* HTML `textarea` elements.
+* Text inputs.
+* `contenteditable` elements.
+* Rich-text editors.
+* Framework-controlled inputs, including React-based applications.
+* Shadow DOM where accessible.
+* Iframes and cross-origin restrictions.
+* Websites that replace their editor dynamically.
+
+Use safe, supported techniques. Do not depend on brittle DOM manipulation or framework internals when a more reliable integration is available.
+If an editor cannot be updated safely, explain the limitation and provide a non-destructive fallback where feasible.
+3.2 Prompt enhancement engine
+Design a modular enhancement pipeline with the following stages:
+
+1. Input validation: Determine whether the active field contains a usable prompt.
+2. Intent analysis: Identify what the user is trying to accomplish.
+3. Task classification: Classify the task into categories such as coding, research, writing, analysis, factual question, planning, or creative work.
+4. Quality analysis: Identify ambiguity, missing constraints, vague instructions, insufficient context, and unspecified output formats.
+5. Framework selection: Select the most suitable framework or combination of techniques.
+6. Prompt rewriting: Produce a clear, actionable, well-structured prompt.
+7. Validation: Check that the result preserves intent and does not introduce unsupported facts or requirements.
+8. Presentation: Return the enhanced prompt in a predictable format.
+9. Replacement: Update the active editor only after a successful response and appropriate validation.
+
+Keep these responsibilities logically separate.
+Avoid unnecessary model calls. Determine which processing stages can be combined into a single request without sacrificing quality or maintainability.
+3.3 Prompt engineering frameworks
+The engine should understand and selectively apply the following frameworks and techniques:
+
+* CO-STAR: Context, Objective, Style, Tone, Audience, Response.
+* RISEN: Role, Instructions, Steps, End Goal, Narrowing.
+* RTF: Role, Task, Format.
+* CREATE: Context, Role, Explicit, Action, Target Audience, Exclusions.
+* APE: Action, Purpose, Expectation.
+* Role and perspective specification.
+* Explicit instructions and step sequencing.
+* Task decomposition.
+* Context enrichment.
+* Output format and schema specification.
+* Few-shot examples when useful.
+* Explicit success criteria.
+* Scope boundaries and exclusions.
+* Ambiguity reduction.
+* Source-material delimitation.
+* Appropriate handling of untrusted input.
+
+Treat framework definitions as conventions that should be verified. Do not assume acronyms have universally standardized meanings.
+Framework selection must be task-dependent. The engine must not mechanically force every prompt into CO-STAR or RISEN.
+Examples:
+
+* A simple factual question may need only clearer wording.
+* A coding request may benefit from language, environment, constraints, expected behavior, and test requirements.
+* A research request may need scope, evidence requirements, source expectations, and a structured output.
+* A creative-writing request may benefit from audience, tone, style, and creative constraints.
+* An analytical task may benefit from explicit evaluation criteria and output structure.
+
+Create a framework registry or equivalent modular architecture so new frameworks and strategies can be added without rewriting the entire enhancement engine.
+For each framework, define its intended use, selection criteria, instructions, limitations, and representative tests.
+3.4 Enhancement modes
+Plan for three levels of enhancement:
+
+* Light: Correct ambiguity and improve clarity with minimal changes.
+* Balanced: Improve instructions, context, constraints, and output format where useful.
+* Deep: Apply more comprehensive task analysis, structure, decomposition, and success criteria when justified.
+
+Balanced should be the default unless the technical evaluation supports another choice.
+The selected mode should affect the enhancement strategy, not simply the length of the generated prompt.
+Consider task-specific presets such as:
+
+* General.
+* Coding.
+* Research.
+* Writing.
+* Analysis.
+* Creative.
+
+Keep these optional presets separate from the core enhancement engine.
+For the MVP, implement only the settings necessary to validate the central experience. Do not overbuild the interface.
+4. AI PROVIDERS — GROQ AND GOOGLE GEMINI
+The initial AI providers must be:
+
+1. Groq API: https://console.groq.com/
+2. Google Gemini API: https://aistudio.google.com/
+
+Both providers must be supported through a provider-neutral architecture.
+The initial prototype should prioritize access through their available free API tiers, where eligible. Do not assume free access means unlimited usage, permanent availability, or permission for every deployment scenario.
+4.1 Research before deciding
+Before choosing the first provider, verify current official documentation for both services.
+Investigate:
+
+* Current available models.
+* Free-tier eligibility and restrictions.
+* Requests-per-minute and requests-per-day limits where applicable.
+* Token and context limits.
+* Model suitability for prompt rewriting and instruction following.
+* Latency and response quality.
+* API authentication.
+* Supported request and response formats.
+* Rate-limit and quota-exhaustion errors.
+* Privacy and data-handling terms.
+* Commercial-use and distribution restrictions.
+* Model deprecation and availability policies.
+
+Include a comparison table in `plan.md`.
+Recommend which provider should be implemented first based on the actual requirements and verified evidence. Do not select a provider solely because it advertises a free tier.
+Record the documentation links and the date of verification.
+4.2 Provider-neutral architecture
+Create a shared provider interface so Groq and Gemini can be used interchangeably.
+Separate:
+
+* Enhancement pipeline.
+* Framework selection.
+* Shared enhancement instructions.
+* Provider adapters.
+* Request construction.
+* Response parsing.
+* Configuration.
+* Credential management.
+* Error handling.
+* Response validation.
+
+Do not scatter provider-specific conditionals throughout the application.
+Provider-specific models, endpoints, and configuration should be centralized.
+The user should be able to select a configured provider through the settings interface.
+A future provider should be addable without rewriting the core enhancement engine.
+4.3 API key management
+For the personal-use prototype, support user-supplied API keys for Groq and Gemini.
+The settings interface should allow the user to:
+
+* Select a provider.
+* Enter or update that provider's API key.
+* Select from verified, supported models.
+* Test provider connectivity where feasible.
+* View understandable configuration and authentication errors.
+* Remove a saved key.
+
+Security requirements:
+
+* Never hardcode real API keys into source code.
+* Never commit real credentials to Git.
+* Do not expose keys in URLs, logs, telemetry, error messages, or debugging output.
+* Never treat a bundled `.env` file as secure once its contents are included in an extension build.
+* Do not claim that Chrome extension storage makes provider keys inaccessible to malicious extensions or local users.
+* Explain the security implications of saving API keys in browser extension storage.
+* Request only necessary Chrome permissions.
+* Avoid collecting or transmitting data unrelated to the enhancement request.
+
+For the initial personal-use prototype, direct provider access using the user's own key is acceptable if the risks are documented and the architecture is designed appropriately.
+For a public release, evaluate a backend proxy that keeps provider credentials off the client. Consider authentication, hosting expenses, rate limiting, abuse prevention, quotas, and operational maintenance.
+Do not introduce a backend automatically. Recommend the simplest viable approach for the intended deployment.
+4.4 Provider fallback and cost control
+Allow the user to configure a default provider and, if practical, a manual alternative.
+Do not silently send a user's prompt to another provider after a failure.
+Any automatic provider fallback must be explicitly enabled, clearly explained, and limited to the configured providers.
+Implement reasonable safeguards against:
+
+* Infinite retries.
+* Duplicate requests.
+* Unnecessary model calls.
+* Repeated quota failures.
+* Excessive request sizes.
+* Unexpected API usage.
+
+Use bounded retries only when appropriate. Respect provider rate-limit guidance and distinguish transient failures from authentication or quota failures.
+4.5 Consistent output
+Both providers must follow the same core enhancement specification.
+Use a predictable response contract that separates:
+
+* Enhanced prompt text.
+* Optional framework or task metadata.
+* Validation status, if needed internally.
+
+Do not expose provider-specific formatting to the user.
+Validate responses before inserting them into an editor. If the response is empty, malformed, or otherwise unusable, preserve the original prompt and display an error.
+Do not automatically replace the user's prompt with an unvalidated response.
+5. UX AND INTERACTION DESIGN
+The interface must be simple, fast, and unobtrusive.
+Evaluate the following MVP capabilities:
+
+* Toolbar action to enhance the active prompt.
+* Keyboard shortcut.
+* Clear progress state.
+* Success and failure feedback.
+* Undo and restore original prompt.
+* Provider and API key settings.
+* Enhancement mode selection.
+* Minimal first-use instructions.
+
+Consider, but do not automatically include, these future capabilities:
+
+* Original-versus-enhanced comparison.
+* Framework explanations.
+* Prompt history.
+* Custom enhancement instructions.
+* Domain-specific presets.
+* User-defined frameworks.
+* Local prompt templates.
+* Enhancement quality feedback.
+
+Prompt history should be opt-in if implemented. Define retention and deletion behavior before storing prompts.
+Interaction rules
+
+* The extension must not interfere with normal typing when inactive.
+* Enhancement must require an intentional user action.
+* Do not automatically enhance every keystroke.
+* Do not submit the prompt.
+* Preserve the original text until the replacement is confirmed.
+* Clearly communicate when the selected editor is unsupported.
+* Prevent duplicate requests while an enhancement is already in progress.
+* Ensure that the user can recover the original prompt if the enhancement fails.
+* Make keyboard shortcuts configurable if supported and justified.
+
+The extension must remain useful without requiring users to understand prompt engineering frameworks.
+6. SECURITY, PRIVACY, AND RELIABILITY
+Use Chrome Extension Manifest V3.
+Investigate the appropriate division of responsibilities between:
+
+* Popup or extension UI.
+* Content scripts.
+* Background service worker.
+* Storage.
+* Provider adapters.
+* Optional backend.
+
+Do not give content scripts or the service worker unnecessary responsibilities or permissions.
+Required safeguards
+
+1. Request only the permissions required by the selected architecture.
+2. Prefer narrow host permissions where feasible.
+3. Avoid broad access to all websites unless the design genuinely requires it and the permissions are clearly justified.
+4. Never transmit page content unrelated to the active prompt.
+5. Do not transmit the full page or conversation history by default.
+6. Treat website content and user-provided material as untrusted input.
+7. Do not let prompt text override application-level security rules or cause unintended tool execution.
+8. Do not execute model-generated code or scripts.
+9. Keep API credentials out of logs and distributed source.
+10. Avoid unnecessary analytics and telemetry.
+11. Document what information is transmitted to Groq or Gemini.
+12. Provide appropriate user disclosure before external processing.
+13. Handle provider failures without destroying the user's original text.
+14. Do not claim that extension-side prompt instructions provide a security boundary against a malicious model response.
+
+Distinguish the security of the application's own behavior from prompt injection risks within text being rewritten.
+Document any remaining risks that cannot be eliminated by the proposed architecture.
+7. TECHNICAL APPROACH
+Evaluate a maintainable technology stack, considering:
+
+* TypeScript.
+* Chrome Extension Manifest V3.
+* A lightweight UI framework or vanilla TypeScript.
+* A suitable build tool.
+* A test runner.
+* Linting and type checking.
+* Chrome extension development and debugging workflows.
+
+Choose the simplest architecture that satisfies the requirements.
+Do not add React, a backend framework, a database, or additional dependencies simply because they are popular.
+Explain the trade-offs in `plan.md`.
+The implementation should use modular code and clear interfaces. Avoid enormous files, unnecessary abstractions, duplicated logic, and hard-to-test dependencies.
+Follow the repository's existing conventions if a project already exists and those conventions are reasonable.
+Do not overwrite existing user work.
+8. PROMPT QUALITY EVALUATION
+A successful enhancement is not necessarily a longer or more elaborate prompt.
+Design a test dataset containing representative examples such as:
+
+* A simple factual question.
+* An underspecified coding task.
+* A research request.
+* A professional writing request.
+* A creative task.
+* A complex analytical task.
+* A prompt with explicit constraints that must be preserved.
+* A prompt that is already well-written.
+* A prompt containing insufficient information.
+* A prompt containing adversarial or untrusted quoted text.
+
+Evaluate the following dimensions:
+
+1. Intent preservation.
+2. Factual and constraint preservation.
+3. Clarity.
+4. Specificity.
+5. Relevance of added structure.
+6. Output-format clarity.
+7. Conciseness.
+8. Absence of invented requirements.
+9. Framework-selection appropriateness.
+10. Failure safety.
+
+Define measurable acceptance criteria and compare Groq and Gemini against the same dataset.
+Include regression tests so changes to the enhancement instructions do not silently degrade prompt quality.
+Use a combination of deterministic assertions and documented human evaluation. Do not pretend a subjective prompt-quality score is an objective guarantee of model performance.
+Set a reasonable response-time target for the MVP and explain how it will be measured.
+9. REQUIRED DEVELOPMENT WORKFLOW
+You must execute this project in three phases.
+PHASE 1 — DISCOVERY AND `plan.md`
+This is the only phase you are authorized to execute initially.
+Start by inspecting the current working directory and repository.
+Determine:
+
+* Whether the repository is empty or already contains a project.
+* Which files and configurations already exist.
+* Whether any implementation or tests already exist.
+* Which technical constraints affect the proposed architecture.
+
+Consult relevant official documentation to resolve important technical uncertainties.
+Then create a comprehensive `plan.md` at the project root.
+If `plan.md` already exists, inspect it first and preserve useful content.
+Required `plan.md` structure
+The document must contain the following sections.
+
+1. Executive summary: Product purpose and proposed MVP.
+2. Goals and non-goals: Explicit scope boundaries.
+3. User stories: Primary workflows and expected behavior.
+4. Functional requirements: Observable behavior of each MVP feature.
+5. Non-functional requirements: Reliability, security, performance, accessibility, and maintainability.
+6. Architecture: Components, responsibilities, and communication.
+7. Architecture diagram: Mermaid diagram showing data flow from the active editor through the extension and selected provider back to the editor.
+8. Technology choices: Candidate stacks, trade-offs, and recommended decisions.
+9. AI provider comparison: Groq versus Gemini, supported models, verified free-tier constraints, documentation references, and recommended starting provider.
+10. Credential architecture: Direct API access versus backend proxy, with risks and costs.
+11. Enhancement pipeline: Input analysis, classification, framework selection, rewriting, validation, and replacement.
+12. Framework registry: Framework definitions, selection criteria, modular interfaces, and tests.
+13. UX design: Toolbar action, keyboard shortcut, progress states, settings, undo, and errors.
+14. Editor compatibility matrix: Supported elements, known limitations, and fallback behavior.
+15. Security and privacy: Permissions, API keys, prompt transmission, retention, and threat model.
+16. Data model: Settings and any necessary persistent state.
+17. Project structure: Proposed directory and file layout.
+18. Implementation milestones: Ordered tasks, dependencies, and completion criteria.
+19. Testing strategy: Unit, integration, browser, compatibility, and manual acceptance tests.
+20. Prompt quality evaluation: Dataset, evaluation dimensions, regression tests, and performance targets.
+21. Risk register: Major risks, likelihood, impact, and mitigation.
+22. Build and deployment: Local development, Chrome testing, packaging, and possible publication.
+23. Open questions: Decisions requiring my input.
+24. Acceptance checklist: Observable conditions for declaring the MVP complete.
+
+For major architectural decisions, document:
+
+* The decision.
+* Alternatives considered.
+* Advantages and disadvantages.
+* The recommendation.
+* The reason for the recommendation.
+* Any unresolved assumptions.
+
+Clearly distinguish verified information from assumptions.
+Use official documentation for changing facts such as API limits, available models, Chrome permissions, and platform requirements.
+Phase 1 restrictions
+During Phase 1:
+
+* Inspect files and configurations as needed.
+* Research relevant documentation.
+* Create or update `plan.md`.
+* Validate the plan for contradictions, missing tasks, unrealistic assumptions, and unnecessary scope.
+
+Do not implement application features.
+Do not generate the full application source code.
+Do not install dependencies merely to begin implementation.
+Do not create unnecessary files.
+Do not change existing application configuration without authorization.
+Do not make irreversible changes.
+Do not silently make major decisions that materially affect security, cost, deployment, or privacy.
+After creating `plan.md`, summarize:
+
+1. The proposed architecture.
+2. The recommended initial provider and the evidence supporting that choice.
+3. The major technical risks.
+4. The important decisions requiring my input.
+5. The recommended implementation sequence.
+
+Then STOP. Wait for my explicit approval before proceeding to Phase 2.
+PHASE 2 — IMPLEMENTATION AFTER APPROVAL
+Only after I explicitly approve `plan.md`:
+
+1. Re-read the approved plan.
+2. Inspect the repository again.
+3. Identify the first implementation milestone.
+4. Implement one coherent milestone at a time.
+5. Write and run tests for the milestone.
+6. Fix relevant failures before marking it complete.
+7. Update the task checklist in `plan.md`.
+8. Document material deviations and their reasons.
+9. Keep the MVP scope controlled.
+10. Report actual progress, test results, unresolved issues, and the next milestone.
+
+If a critical architectural assumption is disproven, stop and explain the issue before making a significant architectural change.
+Do not interpret approval of the plan as permission to ignore its constraints.
+PHASE 3 — VALIDATION AND DELIVERY
+Once the implementation is complete:
+
+* Run automated tests.
+* Run type checks and linting.
+* Build the extension.
+* Verify that the build can be loaded into Chrome.
+* Provide installation and testing instructions.
+* Test prompt capture and replacement.
+* Test undo and restoration.
+* Test supported editors and document unsupported ones.
+* Test Groq and Gemini integrations.
+* Test invalid keys, rate limits, exhausted quotas, timeouts, and network failures.
+* Verify that provider failure does not lose the original prompt.
+* Verify that enhancement never submits the prompt.
+* Check for accidentally exposed credentials.
+* Review permissions and external data transmission.
+* Verify that documentation reflects the actual implementation.
+* Report all unresolved limitations honestly.
+
+Never claim a test was executed or passed unless the corresponding test was actually run and its result verified.
+10. ACCEPTANCE CRITERIA
+The MVP is complete only when:
+
+* The extension can be built and loaded into Chrome.
+* A user can enhance text in a supported editor using an intentional action.
+* The enhanced prompt replaces the correct input without automatically submitting it.
+* The original prompt can be restored.
+* Short prompts remain concise when expansion is unnecessary.
+* Complex prompts receive relevant improvements.
+* The enhancement preserves the user's intent and constraints.
+* Framework selection is modular and testable.
+* Groq and Gemini are supported through separate adapters behind a shared interface.
+* Users can configure their own provider credentials for the chosen prototype architecture.
+* Credentials are not hardcoded into distributed source code.
+* Errors do not destroy the original prompt.
+* The extension does not make unauthorized provider requests or silently switch providers.
+* Essential automated tests pass.
+* The README explains setup, configuration, permissions, limitations, testing, and provider integration.
+* The project contains no placeholder functionality falsely represented as complete.
+
+Add further acceptance tests in `plan.md` wherever necessary.
+11. CONSTRAINTS AND PRIORITIES
+Apply the following priorities in descending order:
+
+1. Preserve the user's intent and original text.
+2. Protect privacy and credentials.
+3. Make the core workflow reliable.
+4. Improve prompt quality measurably.
+5. Support common editable fields.
+6. Keep the user experience simple.
+7. Maintain modularity and extensibility.
+8. Minimize operating costs.
+9. Avoid unnecessary complexity.
+
+Additional rules:
+
+* Never submit a prompt automatically.
+* Never force every prompt into a formal framework.
+* Never equate verbosity with quality.
+* Never invent facts or requirements.
+* Never discard the original prompt before a successful replacement.
+* Never promise universal website compatibility.
+* Never assume free API tiers are unlimited.
+* Never expose API keys intentionally through the source bundle.
+* Never add costly infrastructure without justification.
+* Never claim unverified technical capabilities.
+* Never start implementation before explicit approval of `plan.md`.
+
+
+12. FIRST ACTION
+Begin Phase 1 now.
+Inspect the repository, investigate the important technical uncertainties, and create a detailed, actionable `plan.md` at the project root.
+Review the plan for technical feasibility, missing requirements, security problems, and unnecessary scope.
+Provide the concise decision summary described above.
+Do not write the extension code yet. Do not install dependencies. Do not proceed to implementation. Wait for my explicit approval of `plan.md`.
